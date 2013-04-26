@@ -1,0 +1,9 @@
+
+* Did you backup your previous install?
+
+Required
+* A Brain
+* An unlocked bootloader
+* A custom recovery
+
+Thanks

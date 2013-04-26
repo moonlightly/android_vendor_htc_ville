@@ -1,0 +1,941 @@
+###################################################################################################################
+#
+#					UPDATER-SCRIPT FOR KAOS DROID
+#
+###################################################################################################################
+set_progress(0.00);
+ui_print("@                       Checking Model ID");
+	assert(getprop("ro.product.device") == "ville" || getprop("ro.build.product") == "ville" || getprop("ro.product.board") == "ville");
+ui_print("@                             Success!");
+ui_print("@                       Model ID - ville");
+ui_print("@                          Ok to proceed");
+ui_print("@");
+ui_print("@                     Now flashing Kaos Droid");
+unmount("/system");
+unmount("/cache");
+unmount("/data");
+set_progress(0.02);
+###################################################################################################################
+#
+#						BACKUP PROCESS
+#
+###################################################################################################################
+set_progress(0.04);
+ui_print("@Backup");
+	mount("ext4", "EMMC", "/dev/block/mmcblk0p33", "/system");
+	package_extract_file("system/bin/backuptool.sh", "/tmp/backuptool.sh");
+	package_extract_file("system/bin/backuptool.functions", "/tmp/backuptool.functions");
+	set_perm(0, 0, 0777, "/tmp/backuptool.sh");
+	set_perm(0, 0, 0644, "/tmp/backuptool.functions");
+	run_program("/tmp/backuptool.sh", "backup");
+	unmount("/system");
+set_progress(0.06);
+###################################################################################################################
+#
+#					FORMAT SYSTEM, CACHE AND DATA PARTITIONS
+#
+###################################################################################################################
+set_progress(0.08);
+ui_print("@Executing Wipe");
+ui_print("-->Erasing & formatting /cache as EXT4");
+	format("ext4", "EMMC", "/dev/block/mmcblk0p34", "0", "/cache");
+	run_program("/sbin/sleep", "2");
+ui_print("-->Erasing & formatting /system as EXT4");
+	format("ext4", "EMMC", "/dev/block/mmcblk0p33", "0", "/system");
+	run_program("/sbin/sleep", "2");
+set_progress(0.10);
+###################################################################################################################
+#
+#					REMOVE SDCARD FILES
+#
+###################################################################################################################
+set_progress(0.12);
+ui_print("-->Removing system files from SD Card");
+	delete_recursive("/sdcard/.android_secure");
+	delete_recursive("/sdcard/.bookmark_thumb1");
+	delete_recursive("/sdcard/Android/data/com.google.android.apps.maps");
+	delete_recursive("/sdcard/LazyList");
+	delete_recursive("/sdcard/LOST.DIR");
+	delete_recursive("/sdcard/.android_secure");
+	run_program("/sbin/sleep", "2");
+set_progress(0.14);
+###################################################################################################################
+#
+#				CHECHING FOR FILESYSTEM ERRORS
+#
+###################################################################################################################
+set_progress(0.16);
+ui_print("-->Checking filesystems for errors");
+	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p35");
+	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p34");
+	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p33");
+	run_program("/sbin/sleep", "2");
+set_progress(0.18);
+###################################################################################################################
+#
+#					INSTALL PROCESS
+#
+###################################################################################################################
+set_progress(0.20);
+show_progress(0.30, 4564);
+ui_print("@Installing ROM");
+	mount("ext4", "EMMC", "/dev/block/mmcblk0p34", "/cache");
+	mount("ext4", "EMMC", "/dev/block/mmcblk0p35", "/data");
+	mount("ext4", "EMMC", "/dev/block/mmcblk0p33", "/system");
+	run_program("/sbin/sleep", "2");
+ui_print("-->Writing Data");
+	delete("/data/local");
+	package_extract_dir("data", "/data");
+ui_print("-->Writing System");
+	package_extract_dir("system", "/system");
+	run_program("/sbin/sleep", "2");
+	package_extract_file("build.sh", "/tmp/build.sh");
+	set_perm(0, 0, 0755, "/tmp/build.sh");
+	run_program("/tmp/build.sh");
+	delete("/tmp/build.sh");
+###################################################################################################################
+#	
+#					CPUSLEEP
+#
+###################################################################################################################
+ui_print("@--CPUsleep");
+if
+    file_getprop("/tmp/aroma-data/cpusleep.prop","selected.0") == "1"
+then
+	ui_print("");
+endif;
+if
+    file_getprop("/tmp/aroma-data/cpusleep.prop","selected.0") == "2"
+then
+	ui_print("-->Adding CPUsleep @1000MHz");
+			package_extract_file("extras/cpusleep/1", "/system/etc/init.d/99cpusleep");
+endif;
+if
+    file_getprop("/tmp/aroma-data/cpusleep.prop","selected.0") == "3"
+then
+	ui_print("-->Adding CPUsleep @1200MHz");
+			package_extract_file("extras/cpusleep/1.2", "/system/etc/init.d/99cpusleep");
+endif;
+if
+    file_getprop("/tmp/aroma-data/cpusleep.prop","selected.0") == "4"
+then
+	ui_print("-->Adding CPUsleep @1400MHz");
+			package_extract_file("extras/cpusleep/1.4", "/system/etc/init.d/99cpusleep");
+endif;
+if
+    file_getprop("/tmp/aroma-data/cpusleep.prop","selected.0") == "5"
+then
+	ui_print("-->Adding CPUsleep @1500Mhz");
+			package_extract_file("extras/cpusleep/1.5", "/system/etc/init.d/99cpusleep");
+endif;
+if
+    file_getprop("/tmp/aroma-data/cpusleep.prop","selected.0") == "6"
+then
+	ui_print("-->Adding CPUsleep @1600Mhz");
+			package_extract_file("extras/cpusleep/1.6", "/system/etc/init.d/99cpusleep");
+endif;
+if
+    file_getprop("/tmp/aroma-data/cpusleep.prop","selected.0") == "7"
+then
+	ui_print("-->Adding CPUsleep @1700Mhz");
+			package_extract_file("extras/cpusleep/1.7", "/system/etc/init.d/99cpusleep");
+endif;
+###################################################################################################################
+#	
+#					zRam
+#
+###################################################################################################################
+ui_print("@--zRam");
+if
+    file_getprop("/tmp/aroma-data/zram.prop","selected.0") == "1"
+then
+	delete("/system/etc/init.d/S90Zram");
+        ui_print("zRam Disabled");
+endif;
+if
+    file_getprop("/tmp/aroma-data/zram.prop","selected.0") == "2"
+then
+	ui_print("-->Adding zRam @64MB");
+			package_extract_file("extras/modifications/zram/S90Zram64", "/system/etc/init.d/S90Zram");
+endif;
+if
+    file_getprop("/tmp/aroma-data/zram.prop","selected.0") == "3"
+then
+	ui_print("-->Adding zRam @128MB");
+			package_extract_file("extras/modifications/zram/S90Zram128", "/system/etc/init.d/S90Zram");
+endif;
+if
+    file_getprop("/tmp/aroma-data/zram.prop","selected.0") == "4"
+then
+	ui_print("-->Adding zRam @256MB");
+endif;
+###########################################################################################################
+#
+#                                               BOOT ANIMATION SELECTION
+#
+###########################################################################################################
+ui_print("@--Boot Animation");
+if
+    file_getprop("/tmp/aroma-data/bootanimation.prop","selected.0") == "1"
+then
+	ui_print("-->Adding Kaos Droid's Default Boot Animation");
+endif;
+if
+    file_getprop("/tmp/aroma-data/bootanimation.prop","selected.0") == "2"
+then
+	ui_print("-->Adding CyanogenMod 10 Animation");
+			package_extract_dir("extras/bootanimation/cyanogenmod", "/system/media");
+endif;
+###################################################################################################################
+#	
+#					ADD APPS
+#
+###################################################################################################################
+ui_print("@--Extra Applications");
+if
+    file_getprop("/tmp/aroma-data/applications.prop","item.0.1") == "1"
+then
+	ui_print("-->Adding Adobe Flash Support");
+			package_extract_dir("extras/applications/flash", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/applications.prop","item.0.2") == "1"
+then
+	ui_print("-->Adding TeamViewer Support");
+			package_extract_dir("extras/applications/teamviewer/app", "/data/app");
+			package_extract_dir("extras/applications/teamviewer/system", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/applications.prop","item.0.3") == "1"
+then
+	ui_print("-->Adding Sony PlayStation Mobile");
+			package_extract_dir("extras/applications/psm", "/data/app");
+endif;
+########################################################################################
+#
+#							BROWSERS & LAUNCHERS
+#
+########################################################################################
+ui_print("@--Web Browsers & Home Launchers");
+if
+    file_getprop("/tmp/aroma-data/multi.prop","item.0.1") == "1"
+then
+	ui_print("-->Adding AOSP Browser");
+			package_extract_dir("extras/browsers/aosp", "/system/app");
+else
+    ui_print("-->No Browser Selected");
+endif;
+######################################space line for aroma##################################
+if
+    file_getprop("/tmp/aroma-data/multi.prop","item.0.2") == "1"
+then
+       ui_print("");
+endif;
+######################################space line for aroma##################################
+if
+    file_getprop("/tmp/aroma-data/multi.prop","item.0.3") == "1"
+then
+	ui_print("-->Adding Apex Launcher");
+			package_extract_dir("extras/launchers/apex", "/system/app");
+endif;
+if
+    file_getprop("/tmp/aroma-data/multi.prop","item.0.4") == "1"
+then
+	ui_print("-->Adding Trebuchet Launcher");
+			package_extract_dir("extras/launchers/trebuchet", "/system/app");
+endif;
+if
+    file_getprop("/tmp/aroma-data/multi.prop","item.0.5") == "1"
+then
+	ui_print("-->Adding Nova Launcher");
+			package_extract_dir("extras/launchers/nova", "/system/app");
+endif;
+########################################################################################
+#
+#							EXTRA APPLICATIONS
+#
+########################################################################################
+ui_print("@--Extra Applications");
+if
+    file_getprop("/tmp/aroma-data/extra.prop","item.0.1") == "1"
+then
+	ui_print("-->ppp widget");
+			package_extract_file("extras/extras/de.draisberghof.pppwidget-1.apk", "/system/app/de.draisberghof.pppwidget-1.apk");
+endif;
+if
+    file_getprop("/tmp/aroma-data/extra.prop","item.0.2") == "1"
+then
+	ui_print("-->XenoAmp");
+			package_extract_file("extras/extras/pl.qus.xenoamp-1.apk", "/data/app/pl.qus.xenoamp-1.apk");
+endif;
+if
+    file_getprop("/tmp/aroma-data/extra.prop","item.0.3") == "1"
+then
+	ui_print("-->Swiftkey Tablet");
+			package_extract_file("extras/extras/com.touchtype.swiftkey.tablet.trial-1.apk", "/system/app/com.touchtype.swiftkey.tablet.trial-1.apk");
+			package_extract_file("extras/extras/libswiftkeysdk-java-internal.so", "/system/lib/libswiftkeysdk-java-internal.so");
+endif;
+if
+    file_getprop("/tmp/aroma-data/extra.prop","item.0.4") == "1"
+then
+	ui_print("-->FileExpert");
+			package_extract_file("extras/extras/xcxin.filexpert-1.apk", "/system/app/xcxin.filexpert-1.apk");
+endif;
+if
+    file_getprop("/tmp/aroma-data/extra.prop","item.0.5") == "1"
+then
+	ui_print("-->Mx Player");
+			package_extract_file("extras/extras/com.mxtech.videoplayer.ad-1.apk", "/data/app/com.mxtech.videoplayer.ad-1.apk");
+endif;
+########################################################################################
+#
+#							LANGUAGES
+#
+########################################################################################
+ui_print("@--Languages");
+if
+    file_getprop("/tmp/aroma-data/languages.prop","item.0.1") == "1"
+then
+	ui_print("-->Adding iWnn IME");
+			package_extract_dir("extras/languages/japanese", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/languages.prop","item.0.2") == "1"
+then
+	ui_print("-->Adding Google PinYin IME");
+			package_extract_dir("extras/languages/chinese", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/languages.prop","item.0.3") == "1"
+then
+	ui_print("-->Adding Google Korean IME");
+			package_extract_dir("extras/languages/korean", "/system");
+endif;
+###################################################################################################################
+#
+#				REMOVE MODS
+#
+###################################################################################################################
+ui_print("@--Removing Mods");
+if
+    file_getprop("/tmp/aroma-data/remove.prop","item.0.1") == "1"
+then
+	ui_print("-->Removing CyanogenMod File Manager");
+			delete("/system/app/CMFileManager.apk");
+endif;
+if
+    file_getprop("/tmp/aroma-data/remove.prop","item.0.2") == "1"
+then
+	ui_print("-->Removing ROMManager");
+			delete("/system/app/com.koushikdutta.rommanager-1.apk");
+endif;
+if
+    file_getprop("/tmp/aroma-data/remove.prop","item.0.3") == "1"
+then
+	ui_print("-->Removing Titanium Backup");
+			delete("/system/app/com.keramidas.TitaniumBackup-1.apk");
+endif;
+if
+    file_getprop("/tmp/aroma-data/remove.prop","item.0.4") == "1"
+then
+	ui_print("-->Removing Apollo Media Player");
+			delete("/system/app/Apollo.apk");
+endif;
+if
+    file_getprop("/tmp/aroma-data/remove.prop","item.0.5") == "1"
+then
+	ui_print("-->Removing Ad-Blocking Host file");
+	package_extract_file("hosts", "/system/etc/hosts");
+endif;
+if
+    file_getprop("/tmp/aroma-data/remove.prop","item.0.6") == "1"
+then
+	ui_print("-->Removing default Android Email and Exchange app");
+	delete("/system/app/Email2.apk");
+    delete("/system/app/Exchange2.apk");
+endif;
+###################################################################################################################
+#
+#				ADD GPS CONFIGURATION
+#
+###################################################################################################################
+ui_print("@--GPS Configuration");
+if
+    file_getprop("/tmp/aroma-data/gps.prop","selected.0") == "1"
+then
+	ui_print("-->Asia specific GPS configuration");
+			package_extract_dir("extras/gps/asi", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/gps.prop","selected.0") == "2"
+then
+	ui_print("-->Australia specific GPS configuration");
+			package_extract_dir("extras/gps/aus", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/gps.prop","selected.0") == "3"
+then
+	ui_print("-->Europe specific GPS configuration");
+			package_extract_dir("extras/gps/eur", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/gps.prop","selected.0") == "4"
+then
+	ui_print("-->North America specific GPS configuration");
+			package_extract_dir("extras/gps/nam", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/gps.prop","selected.0") == "5"
+then
+	ui_print("-->South America specific GPS configuration");
+			package_extract_dir("extras/gps/sam", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/gps.prop","selected.0") == "6"
+then
+	ui_print("-->Oceania specific GPS configuration");
+			package_extract_dir("extras/gps/oce", "/system");
+endif;
+if
+    file_getprop("/tmp/aroma-data/gps.prop","selected.0") == "7"
+then
+	ui_print("-->Aouth Africa specific GPS configuration");
+			package_extract_dir("extras/gps/saf", "/system");
+endif;
+set_progress(0.80);
+###################################################################################################################
+#
+#				ADD TOOLBOX SYMLINKS
+#
+###################################################################################################################
+ui_print("@Creating Symlinks");
+ui_print("-->Creating Toolbox Symlinks");
+	symlink("toolbox", "/system/bin/cat");
+	symlink("toolbox", "/system/bin/chmod");
+	symlink("toolbox", "/system/bin/chown");
+	symlink("toolbox", "/system/bin/cmp");
+	symlink("toolbox", "/system/bin/date");
+	symlink("toolbox", "/system/bin/dd");
+	symlink("toolbox", "/system/bin/df");
+	symlink("toolbox", "/system/bin/dmesg");
+	symlink("toolbox", "/system/bin/getevent");
+	symlink("toolbox", "/system/bin/getprop");
+	symlink("toolbox", "/system/bin/hd");
+	symlink("toolbox", "/system/bin/id");
+	symlink("toolbox", "/system/bin/ifconfig");
+	symlink("toolbox", "/system/bin/iftop");
+	symlink("toolbox", "/system/bin/insmod");
+	symlink("toolbox", "/system/bin/ioctl");
+	symlink("toolbox", "/system/bin/ionice");
+	symlink("toolbox", "/system/bin/kill");
+	symlink("toolbox", "/system/bin/ln");
+	symlink("toolbox", "/system/bin/log");
+	symlink("toolbox", "/system/bin/ls");
+	symlink("toolbox", "/system/bin/lsmod");
+	symlink("toolbox", "/system/bin/lsof");	
+	symlink("toolbox", "/system/bin/md5");
+	symlink("toolbox", "/system/bin/mkdir");
+	symlink("toolbox", "/system/bin/mount");
+	symlink("toolbox", "/system/bin/mv");
+	symlink("toolbox", "/system/bin/nandread");
+	symlink("toolbox", "/system/bin/netstat");
+	symlink("toolbox", "/system/bin/newfs_msdos");
+	symlink("toolbox", "/system/bin/notify");
+	symlink("toolbox", "/system/bin/printenv");
+	symlink("toolbox", "/system/bin/ps");
+	symlink("toolbox", "/system/bin/r");
+	symlink("toolbox", "/system/bin/reboot");
+	symlink("toolbox", "/system/bin/renice");
+	symlink("toolbox", "/system/bin/rm");
+	symlink("toolbox", "/system/bin/rmdir");
+	symlink("toolbox", "/system/bin/rmmod");
+	symlink("toolbox", "/system/bin/route");
+	symlink("toolbox", "/system/bin/schedtop");
+	symlink("toolbox", "/system/bin/sendevent");
+	symlink("toolbox", "/system/bin/setconsole");
+	symlink("toolbox", "/system/bin/setprop");
+	symlink("toolbox", "/system/bin/sleep");
+	symlink("toolbox", "/system/bin/smd");
+	symlink("toolbox", "/system/bin/start");
+	symlink("toolbox", "/system/bin/stop");
+	symlink("toolbox", "/system/bin/sync");
+	symlink("toolbox", "/system/bin/top");
+	symlink("toolbox", "/system/bin/touch");
+	symlink("toolbox", "/system/bin/umount");
+	symlink("toolbox", "/system/bin/uptime");
+	symlink("toolbox", "/system/bin/vmstat");
+	symlink("toolbox", "/system/bin/watchprops");
+	symlink("toolbox", "/system/bin/wipe");
+###################################################################################################################
+#
+#				ADD BUSYBOX SYMLINKS
+#
+###################################################################################################################
+ui_print("-->Creating Busybox Symlinks");
+	symlink("busybox", "/system/xbin/[");
+	symlink("busybox", "/system/xbin/[[");
+	symlink("busybox", "/system/xbin/adjtimex");
+	symlink("busybox", "/system/xbin/acpid");
+	symlink("busybox", "/system/xbin/addgroup");
+	symlink("busybox", "/system/xbin/adduser");
+	symlink("busybox", "/system/xbin/ar");
+	symlink("busybox", "/system/xbin/beep");
+	symlink("busybox", "/system/xbin/shiowkey");
+	symlink("busybox", "/system/xbin/slattach");
+	symlink("busybox", "/system/xbin/softlimit");
+	symlink("busybox", "/system/xbin/start-stop-daemon");
+	symlink("busybox", "/system/xbin/sulogin");
+	symlink("busybox", "/system/xbin/sv");
+	symlink("busybox", "/system/xbin/svlogd");
+	symlink("busybox", "/system/xbin/switch_root");
+	symlink("busybox", "/system/xbin/syslogd");
+	symlink("busybox", "/system/xbin/tcpsvd");
+	symlink("busybox", "/system/xbin/udhcpc");
+	symlink("busybox", "/system/xbin/udhcpd");
+	symlink("busybox", "/system/xbin/udpsvd");
+	symlink("busybox", "/system/xbin/vconfig");
+	symlink("busybox", "/system/xbin/vlock");
+	symlink("busybox", "/system/xbin/volname");
+	symlink("busybox", "/system/xbin/watchdog");
+	symlink("busybox", "/system/xbin/who");
+	symlink("busybox", "/system/xbin/zcip");
+	symlink("busybox", "/system/xbin/chat");
+	symlink("busybox", "/system/xbin/chpasswd");
+	symlink("busybox", "/system/xbin/chpst");
+	symlink("busybox", "/system/xbin/chrt");
+	symlink("busybox", "/system/xbin/chvt");
+	symlink("busybox", "/system/xbin/rpm");
+	symlink("busybox", "/system/xbin/rpm2cpio");
+	symlink("busybox", "/system/xbin/rtcwake");
+	symlink("busybox", "/system/xbin/setfont");
+	symlink("busybox", "/system/xbin/setkeycodes");
+	symlink("busybox", "/system/xbin/setlogcons");
+	symlink("busybox", "/system/xbin/setuidgid");
+	symlink("busybox", "/system/xbin/setarch");
+	symlink("busybox", "/system/xbin/sendmail");
+	symlink("busybox", "/system/xbin/script");
+	symlink("busybox", "/system/xbin/scriptreplay");
+	symlink("busybox", "/system/xbin/runlevel");
+	symlink("busybox", "/system/xbin/runsv");
+	symlink("busybox", "/system/xbin/runsvdir");
+	symlink("busybox", "/system/xbin/deallocvt");
+	symlink("busybox", "/system/xbin/delgroup");
+	symlink("busybox", "/system/xbin/deluser");
+	symlink("busybox", "/system/xbin/cryptpw");
+	symlink("busybox", "/system/xbin/dhcprelay");
+	symlink("busybox", "/system/xbin/dnsdomainname");
+	symlink("busybox", "/system/xbin/dkpg");
+	symlink("busybox", "/system/xbin/dumpkmap");
+	symlink("busybox", "/system/xbin/dumpleases");
+	symlink("busybox", "/system/xbin/eject");
+	symlink("busybox", "/system/xbin/envdir");
+	symlink("busybox", "/system/xbin/envuidgid");
+	symlink("busybox", "/system/xbin/fbset");
+	symlink("busybox", "/system/xbin/fbsplash");
+	symlink("busybox", "/system/xbin/fdflush");
+	symlink("busybox", "/system/xbin/fdformat");
+	symlink("busybox", "/system/xbin/fakeidentd");
+	symlink("busybox", "/system/xbin/findfs");
+	symlink("busybox", "/system/xbin/readprofile");
+	symlink("busybox", "/system/xbin/reformime");
+	symlink("busybox", "/system/xbin/raidautorun");
+	symlink("busybox", "/system/xbin/rdate");
+	symlink("busybox", "/system/xbin/pscan");
+	symlink("busybox", "/system/xbin/popmaildir");
+	symlink("busybox", "/system/xbin/ping6");
+	symlink("busybox", "/system/xbin/pipe_progress");
+	symlink("busybox", "/system/xbin/pivot_root");
+	symlink("busybox", "/system/xbin/init");
+	symlink("busybox", "/system/xbin/inotifydipaddr");
+	symlink("busybox", "/system/xbin/ipcalc");
+	symlink("busybox", "/system/xbin/ipcrm");
+	symlink("busybox", "/system/xbin/ipcs");
+	symlink("busybox", "/system/xbin/iplink");
+	symlink("busybox", "/system/xbin/iproute");
+	symlink("busybox", "/system/xbin/iprule");
+	symlink("busybox", "/system/xbin/iptunnel");
+	symlink("busybox", "/system/xbin/kdb_mode");
+	symlink("busybox", "/system/xbin/klogd");
+	symlink("busybox", "/system/xbin/last");
+	symlink("busybox", "/system/xbin/linux32");
+	symlink("busybox", "/system/xbin/linux64");
+	symlink("busybox", "/system/xbin/linuxrc");
+	symlink("busybox", "/system/xbin/loadfont");
+	symlink("busybox", "/system/xbin/loadkmap");
+	symlink("busybox", "/system/xbin/logger");
+	symlink("busybox", "/system/xbin/login");
+	symlink("busybox", "/system/xbin/logname");
+	symlink("busybox", "/system/xbin/logread");
+	symlink("busybox", "/system/xbin/lpd");
+	symlink("busybox", "/system/xbin/lpq");
+	symlink("busybox", "/system/xbin/lpr");
+	symlink("busybox", "/system/xbin/lzmacat");
+	symlink("busybox", "/system/xbin/makemime");
+	symlink("busybox", "/system/xbin/mdev");
+	symlink("busybox", "/system/xbin/microcom");
+	symlink("busybox", "/system/xbin/mkdosfs");
+	symlink("busybox", "/system/xbin/mkfs.minix");
+	symlink("busybox", "/system/xbin/mkfs.vfat");
+	symlink("busybox", "/system/xbin/mkpasswd");
+	symlink("busybox", "/system/xbin/mt");
+	symlink("busybox", "/system/xbin/nameif");
+	symlink("busybox", "/system/xbin/nc");
+	symlink("busybox", "/system/xbin/nmeter");
+	symlink("busybox", "/system/xbin/nohup");
+	symlink("busybox", "/system/xbin/openvt");
+	symlink("busybox", "/system/xbin/passwd");
+	symlink("busybox", "/system/xbin/fsck");
+	symlink("busybox", "/system/xbin/fsck.minix");
+	symlink("busybox", "/system/xbin/ftpd");
+	symlink("busybox", "/system/xbin/getty");
+	symlink("busybox", "/system/xbin/hostid");
+	symlink("busybox", "/system/xbin/hostname");
+	symlink("busybox", "/system/xbin/httpd");
+	symlink("busybox", "/system/xbin/hush");
+	symlink("busybox", "/system/xbin/hwclock");
+	symlink("busybox", "/system/xbin/ifdown");
+	symlink("busybox", "/system/xbin/ifenslave");
+	symlink("busybox", "/system/xbin/ifplugd");
+	symlink("busybox", "/system/xbin/ipup");
+	symlink("busybox", "/system/xbin/arp");
+	symlink("busybox", "/system/xbin/ash");
+	symlink("busybox", "/system/xbin/awk");
+    symlink("busybox", "/system/xbin/base64");
+	symlink("busybox", "/system/xbin/basename");
+	symlink("busybox", "/system/xbin/bbconfig");
+	symlink("busybox", "/system/xbin/blkid");
+	symlink("busybox", "/system/xbin/blockdev");
+	symlink("busybox", "/system/xbin/brctl");
+	symlink("busybox", "/system/xbin/bunzip2");
+	symlink("busybox", "/system/xbin/bzcat");
+	symlink("busybox", "/system/xbin/bzip2");
+	symlink("busybox", "/system/xbin/cal");
+	symlink("busybox", "/system/xbin/cat");
+	symlink("busybox", "/system/xbin/catv");
+	symlink("busybox", "/system/xbin/chattr");
+	symlink("busybox", "/system/xbin/chgrp");
+	symlink("busybox", "/system/xbin/chmod");
+	symlink("busybox", "/system/xbin/chown");
+	symlink("busybox", "/system/xbin/chroot");
+	symlink("busybox", "/system/xbin/cksum");
+	symlink("busybox", "/system/xbin/clear");
+	symlink("busybox", "/system/xbin/cmp");
+	symlink("busybox", "/system/xbin/comm");
+	symlink("busybox", "/system/xbin/cp");
+	symlink("busybox", "/system/xbin/cpio");
+	symlink("busybox", "/system/xbin/crond");
+	symlink("busybox", "/system/xbin/crontab");
+	symlink("busybox", "/system/xbin/cut");
+	symlink("busybox", "/system/xbin/date");
+	symlink("busybox", "/system/xbin/dc");
+	symlink("busybox", "/system/xbin/dd");
+	symlink("busybox", "/system/xbin/depmod");
+	symlink("busybox", "/system/xbin/devmem");
+	symlink("busybox", "/system/xbin/df");
+	symlink("busybox", "/system/xbin/diff");
+	symlink("busybox", "/system/xbin/dirname");
+	symlink("busybox", "/system/xbin/dmesg");
+	symlink("busybox", "/system/xbin/dnsd");
+	symlink("busybox", "/system/xbin/dos2unix");
+	symlink("busybox", "/system/xbin/du");
+	symlink("busybox", "/system/xbin/echo");
+	symlink("busybox", "/system/xbin/ed");
+	symlink("busybox", "/system/xbin/egrep");
+	symlink("busybox", "/system/xbin/env");
+    symlink("busybox", "/system/xbin/expand");
+	symlink("busybox", "/system/xbin/expr");
+	symlink("busybox", "/system/xbin/false");
+	symlink("busybox", "/system/xbin/fdisk");
+	symlink("busybox", "/system/xbin/fgrep");
+	symlink("busybox", "/system/xbin/find");
+	symlink("busybox", "/system/xbin/flash_lock");
+	symlink("busybox", "/system/xbin/flash_unlock");
+	symlink("busybox", "/system/xbin/flashcp");
+	symlink("busybox", "/system/xbin/flock");
+	symlink("busybox", "/system/xbin/fold");
+	symlink("busybox", "/system/xbin/free");
+	symlink("busybox", "/system/xbin/freeramdisk");
+	symlink("busybox", "/system/xbin/fsync");
+	symlink("busybox", "/system/xbin/ftpget");
+	symlink("busybox", "/system/xbin/ftpput");
+	symlink("busybox", "/system/xbin/fuser");
+	symlink("busybox", "/system/xbin/getopt");
+	symlink("busybox", "/system/xbin/grep");
+	symlink("busybox", "/system/xbin/groups");
+	symlink("busybox", "/system/xbin/gunzip");
+	symlink("busybox", "/system/xbin/gzip");
+	symlink("busybox", "/system/xbin/halt");
+	symlink("busybox", "/system/xbin/head");
+	symlink("busybox", "/system/xbin/hexdump");
+	symlink("busybox", "/system/xbin/id");
+	symlink("busybox", "/system/xbin/ifconfig");
+	symlink("busybox", "/system/xbin/inetd");
+	symlink("busybox", "/system/xbin/insmod");
+	symlink("busybox", "/system/xbin/install");
+	symlink("busybox", "/system/xbin/iostat");
+	symlink("busybox", "/system/xbin/ip");
+	symlink("busybox", "/system/xbin/kill");
+	symlink("busybox", "/system/xbin/killall");
+	symlink("busybox", "/system/xbin/killall5");
+	symlink("busybox", "/system/xbin/length");
+	symlink("busybox", "/system/xbin/less");
+	symlink("busybox", "/system/xbin/ln");
+	symlink("busybox", "/system/xbin/losetup");
+	symlink("busybox", "/system/xbin/ls");
+	symlink("busybox", "/system/xbin/lsattr");
+	symlink("busybox", "/system/xbin/lsmod");
+	symlink("busybox", "/system/xbin/lspci");
+	symlink("busybox", "/system/xbin/lsusb");
+	symlink("busybox", "/system/xbin/lzcat");
+	symlink("busybox", "/system/xbin/lzma");
+	symlink("busybox", "/system/xbin/lzop");
+	symlink("busybox", "/system/xbin/lzopcat");
+	symlink("busybox", "/system/xbin/man");
+	symlink("busybox", "/system/xbin/md5sum");
+	symlink("busybox", "/system/xbin/mesg");
+	symlink("busybox", "/system/xbin/mkdir");
+	symlink("busybox", "/system/xbin/mke2fs");
+	symlink("busybox", "/system/xbin/mkfifo");
+	symlink("busybox", "/system/xbin/mknod");
+	symlink("busybox", "/system/xbin/mkswap");
+	symlink("busybox", "/system/xbin/mktemp");
+	symlink("busybox", "/system/xbin/modinfo");
+	symlink("busybox", "/system/xbin/modprobe");
+	symlink("busybox", "/system/xbin/more");
+	symlink("busybox", "/system/xbin/mount");
+	symlink("busybox", "/system/xbin/mountpoint");
+	symlink("busybox", "/system/xbin/mv");
+	symlink("busybox", "/system/xbin/nanddump");
+	symlink("busybox", "/system/xbin/nandwrite");
+	symlink("busybox", "/system/xbin/netstat");
+	symlink("busybox", "/system/xbin/nice");
+	symlink("busybox", "/system/xbin/nohup");
+	symlink("busybox", "/system/xbin/nslookup");
+	symlink("busybox", "/system/xbin/ntpd");
+	symlink("busybox", "/system/xbin/od");
+	symlink("busybox", "/system/xbin/patch");
+	symlink("busybox", "/system/xbin/pgrep");
+	symlink("busybox", "/system/xbin/pidof");
+	symlink("busybox", "/system/xbin/ping");
+	symlink("busybox", "/system/xbin/pkill");
+	symlink("busybox", "/system/xbin/pmap");
+	symlink("busybox", "/system/xbin/poweroff");
+	symlink("busybox", "/system/xbin/printenv");
+	symlink("busybox", "/system/xbin/printf");
+	symlink("busybox", "/system/xbin/ps");
+	symlink("busybox", "/system/xbin/pstree");
+	symlink("busybox", "/system/xbin/pwd");
+	symlink("busybox", "/system/xbin/pwdx");
+	symlink("busybox", "/system/xbin/rdev");
+	symlink("busybox", "/system/xbin/readlink");
+	symlink("busybox", "/system/xbin/realpath");
+	symlink("busybox", "/system/xbin/renice");
+	symlink("busybox", "/system/xbin/reset");
+	symlink("busybox", "/system/xbin/resize");
+	symlink("busybox", "/system/xbin/rev");
+	symlink("busybox", "/system/xbin/rm");
+	symlink("busybox", "/system/xbin/rmdir");
+	symlink("busybox", "/system/xbin/rmmod");
+	symlink("busybox", "/system/xbin/route");
+	symlink("busybox", "/system/xbin/run-parts");
+	symlink("busybox", "/system/xbin/rx");
+	symlink("busybox", "/system/xbin/sed");
+	symlink("busybox", "/system/xbin/seq");
+	symlink("busybox", "/system/xbin/setconsole");
+	symlink("busybox", "/system/xbin/setserial");
+	symlink("busybox", "/system/xbin/setsid");
+	symlink("busybox", "/system/xbin/sh");
+	symlink("busybox", "/system/xbin/sha1sum");
+	symlink("busybox", "/system/xbin/sha256sum");
+	symlink("busybox", "/system/xbin/sha512sum");
+	symlink("busybox", "/system/xbin/sleep");
+	symlink("busybox", "/system/xbin/sort");
+	symlink("busybox", "/system/xbin/split");
+	symlink("busybox", "/system/xbin/stat");
+	symlink("busybox", "/system/xbin/strings");
+	symlink("busybox", "/system/xbin/stty");
+	symlink("busybox", "/system/xbin/sum");
+	symlink("busybox", "/system/xbin/swapoff");
+	symlink("busybox", "/system/xbin/swapon");
+    symlink("busybox", "/system/xbin/sync");
+	symlink("busybox", "/system/xbin/sysctl");
+	symlink("busybox", "/system/xbin/tac");
+	symlink("busybox", "/system/xbin/tail");
+	symlink("busybox", "/system/xbin/tar");
+	symlink("busybox", "/system/xbin/taskset");
+	symlink("busybox", "/system/xbin/tee");
+	symlink("busybox", "/system/xbin/telnet");
+	symlink("busybox", "/system/xbin/telnetd");
+	symlink("busybox", "/system/xbin/test");
+	symlink("busybox", "/system/xbin/tftp");
+	symlink("busybox", "/system/xbin/tftpd");
+	symlink("busybox", "/system/xbin/time");
+	symlink("busybox", "/system/xbin/timeout");
+	symlink("busybox", "/system/xbin/top");
+	symlink("busybox", "/system/xbin/touch");
+	symlink("busybox", "/system/xbin/tr");
+	symlink("busybox", "/system/xbin/traceroute");
+	symlink("busybox", "/system/xbin/true");
+	symlink("busybox", "/system/xbin/ttysize");
+	symlink("busybox", "/system/xbin/tty");
+	symlink("busybox", "/system/xbin/tune2fs");
+	symlink("busybox", "/system/xbin/umount");
+	symlink("busybox", "/system/xbin/uname");
+	symlink("busybox", "/system/xbin/uncompress");
+	symlink("busybox", "/system/xbin/unexpand");
+	symlink("busybox", "/system/xbin/uniq");
+	symlink("busybox", "/system/xbin/unix2dos");
+	symlink("busybox", "/system/xbin/unlzma");
+	symlink("busybox", "/system/xbin/unlzop");
+	symlink("busybox", "/system/xbin/unxz");
+	symlink("busybox", "/system/xbin/unzip");
+	symlink("busybox", "/system/xbin/uptime");
+	symlink("busybox", "/system/xbin/usleep");
+	symlink("busybox", "/system/xbin/uudecode");
+	symlink("busybox", "/system/xbin/uuencode");
+	symlink("busybox", "/system/xbin/vi");
+	symlink("busybox", "/system/xbin/watch");
+	symlink("busybox", "/system/xbin/wc");
+	symlink("busybox", "/system/xbin/wget");
+	symlink("busybox", "/system/xbin/which");
+	symlink("busybox", "/system/xbin/whoami");
+	symlink("busybox", "/system/xbin/xargs");
+	symlink("busybox", "/system/xbin/xz");
+	symlink("busybox", "/system/xbin/xzcat");
+	symlink("busybox", "/system/xbin/yes");
+	symlink("busybox", "/system/xbin/zcat");
+###################################################################################################################
+#
+#				ADD ADDITIONAL SYMLINKS
+#
+###################################################################################################################
+ui_print("-->Creating Additional Symlinks");
+	symlink("dumpstate", "/system/bin/dumpcrash");
+	symlink("mksh", "/system/bin/sh");
+	symlink("/system/xbin/busybox", "/system/bin/busybox");
+	symlink("/system/fonts/Roboto-Bold.ttf", "/system/fonts/DroidSans-Bold.ttf");
+	symlink("/system/fonts/Roboto-Regular.ttf", "/system/fonts/DroidSans.ttf");
+###################################################################################################################
+#
+#				SET PERMISSIONS
+#
+###################################################################################################################
+ui_print("@Writing Permissions");
+	set_perm_recursive(1000, 1000, 0771, 0644, "/data/app");
+	set_perm_recursive(0, 0, 0755, 0644, "/system");
+	set_perm_recursive(0, 0, 0755, 0755, "/system/addon.d");
+	set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
+	set_perm_recursive(1002, 1002, 0755, 0440, "/system/etc/bluetooth");
+	set_perm_recursive(0, 2000, 0755, 0755, "/system/etc/init.d");
+	set_perm_recursive(0, 0, 0755, 0555, "/system/etc/ppp");
+	set_perm_recursive(0, 2000, 0755, 0644, "/system/vendor/etc");
+	set_perm_recursive(0, 2000, 0755, 0644, "/system/vendor/lib/drm");
+	set_perm_recursive(0, 2000, 0755, 0644, "/system/vendor/lib/hw");
+	set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
+	set_perm(2000, 2000, 0771, "/data/local");
+	set_perm(0, 3003, 06755, "/system/bin/ip");
+	set_perm(0, 3003, 02750, "/system/bin/netcfg");
+	set_perm(0, 3004, 02755, "/system/bin/ping");
+	set_perm(0, 2000, 06750, "/system/bin/run-as");
+	set_perm(0, 0, 0755, "/system/etc/bluetooth");
+	set_perm(1002, 1002, 0440, "/system/etc/dbus.conf");
+	set_perm(1014, 2000, 0550, "/system/etc/dhcpcd/dhcpcd-run-hooks");
+	set_perm(0, 0, 0644, "/system/etc/group");
+	set_perm(0, 0, 0644, "/system/etc/gshadow");
+	set_perm(0, 0, 0755, "/system/etc/init.d");
+	set_perm(0, 2000, 0550, "/system/etc/init.goldfish.sh");
+	set_perm(0, 0, 0644, "/system/etc/passwd");
+	set_perm(0, 0, 0644, "/system/etc/shadow");
+	set_perm(0, 2000, 0755, "/system/vendor");
+	set_perm(0, 2000, 0755, "/system/vendor/etc/audio_effects.conf");
+	set_perm(0, 2000, 0755, "/system/vendor/lib");
+	set_perm(0, 0, 0644, "/system/vendor/lib/drm/libdrmwvmplugin.so");
+	set_perm(0, 1000, 0755, "/system/xbin/busybox");
+	set_perm(0, 0, 06755, "/system/xbin/librank");
+	set_perm(0, 0, 04755, "/system/xbin/nano");
+	set_perm(0, 0, 06755, "/system/xbin/procmem");
+	set_perm(0, 0, 06755, "/system/xbin/procrank");
+	set_perm(0, 0, 0755, "/system/xbin/sqlite3");
+	set_perm(0, 0, 06755, "/system/xbin/su");
+	set_perm(0, 0, 04755, "/system/xbin/sysro");	
+	set_perm(0, 0, 04755, "/system/xbin/sysrw");	
+	set_perm(0, 0, 0755, "/system/xbin/zipalign");
+###################################################################################################################
+#
+#				INSTALL BOOT & KERNEL
+#
+###################################################################################################################
+ui_print("@Installing boot & Kernel");
+ui_print("-->Installing boot");
+	assert(package_extract_file("boot.img", "/tmp/boot.img"),
+	run_program("/sbin/busybox", "dd", "if=/tmp/boot.img", "of=/dev/block/mmcblk0p21");
+	delete("/tmp/boot.img"));
+	run_program("/sbin/sleep", "2");
+###################################################################################################################
+#
+#						RESTORE
+#
+###################################################################################################################
+ui_print("@Restore");
+ui_print("-->Restoring files");
+	package_extract_file("system/bin/backuptool.sh", "/tmp/backuptool.sh");
+	package_extract_file("system/bin/backuptool.functions", "/tmp/backuptool.functions");
+	package_extract_file("gapps.sh", "/tmp/gapps.sh");
+	set_perm(0, 0, 0777, "/tmp/backuptool.sh");
+	set_perm(0, 0, 0644, "/tmp/backuptool.functions");
+	set_perm(0, 0, 0777, "/tmp/gapps.sh");
+	run_program("/tmp/backuptool.sh", "restore");
+    run_program("/tmp/gapps.sh");
+
+delete("/system/bin/backuptool.sh");
+delete("/system/bin/backuptool.functions");
+###################################################################################################################
+#
+#				CLEAN UP PROCESS
+#
+###################################################################################################################
+ui_print("@Cleaning up");
+ui_print("-->Deleting Dalvik-Cache");
+	delete_recursive("/data/dalvik-cache");
+	delete_recursive("/data/resource-cache");
+	delete_recursive("/data/system/appusagestats");
+	delete_recursive("/data/system/dropbox");
+	delete_recursive("/data/system/usagestats");
+ui_print("-->Deleting Old SDCard Data");
+	delete("/data/local");	
+	delete_recursive("/sdcard/LOST.DIR");
+	delete_recursive("/sdcard/.data/navigator/Data/Temporary");
+	delete_recursive("/sdcard/LazyList");
+ui_print("-->Deleting Placeholders");
+	delete("/data/app/placeholder");
+	delete("/data/local/placeholder");
+	delete("/data/local/userinit.d/placeholder");
+	delete("/system/xbin/bb/placeholder");
+ui_print("-->Formatting Cache");
+	unmount("/dev/block/mmcblk0p34");
+	format("ext4", "EMMC", "/dev/block/mmcblk0p34", "0", "/cache");
+###################################################################################################################
+#
+#				FINISHED
+#
+###################################################################################################################
+ui_print("");
+ui_print("");
+ui_print("@Installation Complete");
+ui_print(" ");
+ui_print("@Welcome to...");
+ui_print("@");
+ui_print("@             KAOS DROID");
+ui_print("@");
+ui_print("@                       By Omega Kaos");
+ui_print(" ");
+ui_print(" ");
+ui_print("                       Please ensure you");
+ui_print("                 complete at least 1 full boot");
+ui_print("              prior to flashing any themes or mods");
+ui_print("");
+ui_print("");
+	unmount("/data");
+	unmount("/system");
+	run_program("/sbin/sleep", "2");
+set_progress(1.00);

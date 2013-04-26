@@ -1,0 +1,85 @@
+#
+#Kaos Droid tweaks
+#
+
+#Others
+#Enable custom tweaks and moddifications
+custom.tweaks.enabler=Kaos_Droid
+
+# HDMI
+ro.hdmi.enable=1
+
+# force gpu rendering(2d drawing) [Nvidia setting - libhtc-opt2.so]
+persist.sys.ui.hw=1
+ 
+power.saving.mode=1 
+Persist.dmesg.mode=split
+Persist.dmesg.rotate=1
+#Ui Tweaks
+ 
+# Patching build.prop for better scrolling
+windowsmgr.max_events_per_sec=240
+ 
+# Adding media patch to build.prop
+ro.media.dec.jpeg.memcap=8000000
+ro.media.enc.hprof.vid.bps=8000000
+ 
+# Bravia Engine Service
+ro.service.swiqi.supported=true
+persist.service.swiqi.enable=1
+ 
+#Video Acceleration Enabled
+video.accelerate.hw=1
+ 
+#Increase Performance
+debug.performance.tuning=1
+ 
+#Disable Sending Usage Data
+ro.config.nocheckin=1
+ 
+#Deeper Sleep
+pm.sleep_mode=1
+ 
+#Disable Kernel Error Checking
+ro.kernel.android.checkjni=0
+ 
+ 
+# SuperCharger Installation Marker.
+# V6 SuperCharger, OOM Grouping & Priority Fixes created by zeppelinrox.
+# SuperMinFree Calculator & MFK Calculator (for min_free_kbytes) created by zeppelinrox also ;^]
+#
+# See http://goo.gl/krtf9 - Linux Memory Consumption - Nice article!
+# See http://goo.gl/hFdNO - Memory and SuperCharging Overview ...or... Why Free RAM Is NOT Wasted RAM!
+# See http://goo.gl/4w0ba - MFK Calculator Info - explanation for vm.min_free_kbytes.
+#
+# DO NOT DELETE COMMENTS. DELETING COMMENTS WILL BREAK UNINSTALL ROUTINE!
+#
+# BEGIN OOM_ADJ_Settings
+#
+# This ROM (Android 4.0 and greater) requires a PATCHED services.jar
+# The ADJ priorities that were here DO NOT work anymore!
+#
+# END OOM_ADJ_Settings
+  ############=##############
+ #  Miscellaneous Tweaks!  #
+###########################
+dalvik.vm.heapgrowthlimit=156m
+dalvik.vm.heapsize=156m
+persist.sys.purgeable_assets=1
+wifi.supplicant_scan_interval=180
+windowsmgr.max_events_per_sec=200
+pm.sleep_mode=1
+# End of V6 SuperCharged Entries.
+# Nitro Lag Nullifier created by zeppelinrox.
+#
+# DO NOT DELETE COMMENTS. DELETING COMMENTS WILL BREAK UNINSTALL ROUTINE!
+#
+ENFORCE_PROCESS_LIMIT=false
+MAX_SERVICE_INACTIVITY=
+MIN_HIDDEN_APPS=
+MAX_HIDDEN_APPS=
+CONTENT_APP_IDLE_OFFSET=
+EMPTY_APP_IDLE_OFFSET=
+MAX_ACTIVITIES=
+ACTIVITY_INACTIVE_RESET_TIME=
+# End of Nullified Entries.

@@ -1,0 +1,186 @@
+Kaos Droid BugList
+======================
+V5.1.5 (13-04-2013)
+- Nothing so far
+
+V5.1.4 (07-04-2013)
+- GPS not finding location
+
+V5.1.3 (30-03-2013)
+- Setting OC to 1700MHz with M+Kernel causes Kernel Panic???
+
+V5.1.2 (24-03-2013)
+- Setting OC to 1700MHz with M+Kernel causes Kernel Panic
+- Nav bar buttons not displaying correctly in landscape
+- Recent apps button sometimes does not display in portrait mode
+- Random Lag
+- GPS Issues noticed via apps and Logcat
+
+V5.1.1 (08-03-2013)
+- Setting OC to 1700MHz with M+Kernel causes Kernel Panic
+- Nav bar buttons not displaying correctly in landscape
+- Recent apps button sometimes does not display in portrait mode
+- Random Lag
+
+V5.1.0 (28-02-2013)
+- Setting OC to 1700MHz with M+Kernel causes Kernel Panic
+- Nav bar buttons not displaying correctly in landscape
+- Recent apps button sometimes does not display in portrait mode
+- Random Lag
+
+V5.0.0 (20-02-2013)
+- Wifi losing connection (could be just me)
+- Nav bar buttons not displaying correctly in landscape
+- Recent apps button sometimes does not display in portrait mode
+- Random Lag
+- When OC to 1700MHz ROM Crashes and then reboots (using m-kernel)
+- YouTube Remote not installing from seperate GAPPS zip when selected
+
+V4.0.0 (11-12-2012)
+- None so Far :)
+
+V3.8.3 (28-11-2012)
+- None so Far :)
+
+V3.8.2 (30-10-2012)
+- Aldiko Sync app doesn't auto sync when requested
+- Adobe Flash Player Doesn't work correctly
+
+V3.8.1 (25-10-2012)
+- Fixed Lag Issues (little boost file)
+- Fixed TeamViewer QuickSupport (now patched)
+
+V3.8.0 (18-10-2012)
+- Google Now issue FC's
+- Franco Kernel issue causing soft brick of device
+- Duplicate settings in the notification bar in Tablet UI
+- VPN Support issues
+
+V3.7.3 (24-09-2012)
+- Real Racing 2 Force Closes w/ True Tablet UI
+- Goo Manager "updates available" issue
+- Firefox keeps Closing
+- Aroma option for standard nav bar doesn't flash
+
+V3.7.2 (20-09-2012)
+- Real Racing 2 Force Closes w/ True Tablet UI
+- Overlapping buttons in Email Setup w/ True Tablet UI
+- BBC iPlayer redirects to website w/ True Tablet UI
+- BBC iPlayer just buffers
+- Firefox FC's
+- Google Earth FC's
+- iWnn IME not displaying some characters
+- Google Setup Wizard Crashes
+- Flash Player doesn't work correctly
+- Lag (occasional)
+- Goo Manager "updates available" issue
+- Camera application issues
+
+V3.7.1 (20-09-2012)
+- Real Racing 2 Force Closes w/ True Tablet UI
+- Overlapping buttons in Email Setup w/ True Tablet UI
+- BBC iPlayer redirects to website w/ True Tablet UI
+- BBC iPlayer just buffers
+- Firefox FC's
+- Google Earth FC's
+- iWnn IME not displaying some characters
+- Google Setup Wizard Crashes
+- Flash Player doesn't work correctly
+- Lag (occasional)
+- Goo Manager "updates available" issue
+- Camera application issues
+- Beats Audio causes some sound issues and Youtube not to work
+
+V3.7 (18-09-2012
+- Real Racing 2 Force Closes w/ True Tablet UI
+- Overlapping buttons in Email Setup w/ True Tablet UI
+- BBC iPlayer redirects to website w/ True Tablet UI
+- BBC iPlayer just buffers
+- Google Setup Wizard closes (Unknown Reason)
+- Google Chrome constantly Crashes (Unknown Reason)
+- True Tablet UI FC'S Every app
+- Shell reboots when choosing advanced settings in wifi
+- Shell reboots when changing default keyboard 
+
+V3.6.1 (12-09-2012
+- Real Racing 2 Force Closes w/ True Tablet UI
+- Overlapping buttons in Email Setup w/ True Tablet UI
+- BBC iPlayer redirects to website w/ True Tablet UI
+- Backup not selecting a Google account
+- Landscape button issue
+- Lockscreen not saving shortcuts
+- Return arrow not changing to down arrow when keyboard is showing
+- No hit animation with buttons on nav bar
+- Gallery FC when sharing to picasa
+- Gallery FC when sharing with Facebook
+- Hidden menu button in bottom right corner
+- BBC iPlayer just buffers
+
+V3.6 (12-09-2012)
+- Real Racing 2 Force Closes w/ True Tablet UI
+- Overlapping buttons in Email Setup w/ True Tablet UI
+- BBC iPlayer redirects to website w/ True Tablet UI
+- OTA Updates and notifications not working for all OTA apps
+- Backup not selecting a Google account
+- Landscape button issue
+- Lockscreen not saving shortcuts
+- Return arrow not changing to down arrow when keyboard is showing
+- No hit animation with buttons on nav bar
+- Gallery FC when sharing to picasa
+- Gallery FC when sharing with Facebook
+- Hidden menu button in bottom right corner
+
+
+V3.5 (30-08-2012)
+- Real Racing 2 Force Closes w/ True Tablet UI
+- Overlapping buttons in Email Setup w/ True Tablet UI
+- BBC iPlayer redirects to website w/ True Tablet UI
+- Lockscreen rotation won't disable
+- AOSP Browser FC's
+
+V3.4 (12-08-2012)
+- Dropbox Force Closes w/ True Tablet UI
+- Real Racing 2 Force Closes w/ True Tablet UI
+- Overlapping buttons in Email Setup w/ True Tablet UI
+- BBC iPlayer redirects to website w/ True Tablet UI
+- Nvision doesn't Work w/o True Tablet UI
+
+V3.3 (08-08-2012)
+- Boot loops on full wipe
+- su binary failed
+- WiFi not auto connecting on dhcp
+- Wifi icon not showing a connection or strength
+- Aroma Installer Calibration is a bit sketchy
+- Dropbox Force Closes w/ True Tablet UI
+- Real Racing 2 Force Closes w/ True Tablet UI
+- ROM Manager won't boot into recovery
+- Lockscreen Landscape rotation not working with Stock Launcher
+- Alarm (Visibility on lockscreen, not going off)
+- Overlapping buttons in Email Setup w/ True Tablet UI
+
+V3.2 (06-08-2012)
+- None So Far
+
+V3.1 (04-08-2012)
+- SU binary not working correctly
+- Wifi issues using Motley Kernel (fix: manuall ip or flash faux kernel)
+
+V3.0 (03-08-2012)
+- setup fc
+- Apex Launcher not displaying google library 
+- and alot more as my hdd had alot of errors so did the rom
+
+V2.1 (31-07-2012)
+- boot issues (maybe caused by updater-script)
+
+V2.0 (26-07-2012)
+- After full wipe It hangs on boot screen just flash rom again without full wipe then works fine
+- Email app doesn't work correclty
+
+V1.1 (26-07-2012)
+- None so far
+
+V1.0 (26-07-2012)
+- settings buttone from the notification doesnt work for me (can anyone verify this)
+- wifi not working correctly
+- home button doesnt work

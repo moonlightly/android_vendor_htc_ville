@@ -1,0 +1,333 @@
+##
+#
+# AROMA Installer - Kaos Droid
+#       (c) 2011 by Ahmad Amarullah
+#           amarullz - xda-developers
+#           http://www.amarullz.com/
+#
+##
+
+##
+# SET THEME
+#
+#theme("ics");
+###########################################################################################################
+#
+#                                               SPLASH SCREEN
+#
+###########################################################################################################
+anisplash(
+  #-- Number of Loop
+    8,
+  
+  #-- Frame 1 [ Image, duration in millisecond ]. <AROMA Resource Dir>/splash/a[1..6].png
+    "splash/a1", 30,
+    "splash/a2", 30,
+    "splash/a3", 30,
+    "splash/a4", 30,
+    "splash/a5", 30,
+    "splash/a6", 30
+);
+###########################################################################################################
+#
+#                                               ROM INFORMATION
+#
+###########################################################################################################
+ini_set("rom_name",             "Kaos Droid");
+ini_set("rom_version",          "V5.1.5");
+ini_set("rom_date",             "April 13th 2013");
+ini_set("rom_author",           "Omega Kaos");
+ini_set("rom_device",           "HTC One S");
+###########################################################################################################
+#
+#                                               WELCOME INFORMATION
+#
+###########################################################################################################
+viewbox(
+  "Welcome",
+    "\n\n\n\n\n"+
+    "You're about to flash\n"+
+	"\t: <b><#selectbg_g>"+ini_get("rom_name")+"</#></b>\n"+
+    "\t: <b><#selectbg_g>"+ini_get("rom_version")+"</#></b>\n"+
+    "\t: <b><#selectbg_g>"+ini_get("rom_date")+"</#></b>\n\n\n"+
+    "Press Next to continue the installation...",
+  "icons/info"
+);
+###########################################################################################################
+#
+#                                               AGREEMENT SECTION
+#
+###########################################################################################################
+agreebox(
+  "Terms Of Use",
+  "Please read the Terms of Use ...",
+  "icons/agreement",
+  readfile_aroma("agreement.txt"),
+  "I Agree with the Terms Of Use...",
+  "Please check the agreement..."
+);
+###########################################################################################################
+#
+#                                               REQUIREMENTS SECTION
+#
+###########################################################################################################
+agreebox(
+  "Requirements",
+  "Please Make sure you meet the requirements",
+  "icons/info",
+  readfile_aroma("requirements.txt"),
+  "I do meet the requirements",
+  "Please check the requirements..."
+);
+###########################################################################################################
+#
+#                                               THANKS TO.. SECTION
+#
+###########################################################################################################
+textbox(
+  "Special Thanks",
+  "A Special thanks to the following people @ XDA...",
+  "icons/info",
+  #-- Arg 4
+    resread("thanks.txt")
+);
+###########################################################################################################
+#
+#                                               CHANGELOG SECTION
+#
+###########################################################################################################
+textbox(
+  #-- Title
+    "Changelog",
+  
+  #-- Subtitle
+    "Changes Made in Kaos Droid",
+  
+  #-- Icon
+    "@update",
+  
+  #-- Arg 4
+    resread("changelog.txt")
+);
+###########################################################################################################
+#
+#                                               BUG LIST SECTION
+#
+###########################################################################################################
+textbox(
+  #-- Title
+    "Bugs",
+  
+  #-- Subtitle
+    "Bug List",
+  
+  #-- Icon
+    "@update",
+  
+  #-- Arg 4
+    resread("bugs.txt")
+);
+
+appendvar("installmsg","\n\nPlease Select Installation Type Below:");
+###########################################################################################################
+#
+#                                               CPUSLEEP SELECTION
+#
+###########################################################################################################
+selectbox(
+  "CPUSleep",
+  "Which CPUSleep variation would you like to use?:",
+  "icons/personalize",
+  "cpusleep.prop",
+
+  "None",          		"No cpusleep (recommended with Stock Kernel)",0,
+  "1000MHz",			"Frequency will be 1GHz when screen is on",0,
+  "1200MHz",			"Frequency will be 1.5GHz when screen is on",0,
+  "1400MHz",          		"Frequency will be 1.4GHz when screen is on",0,
+  "1500MHz",			"Frequency will be 1.5GHz when screen is on",0,
+  "1600MHz",			"Frequency will be 1.6GHz when screen is on",1,
+  "1700MHz",			"Frequency will be 1.7GHz when screen is on",0
+);
+###########################################################################################################
+#
+#                                               zRam SELECTION
+#
+###########################################################################################################
+selectbox(
+  "zRam",
+  "Which ZRam variation would you like to use?:",
+  "icons/personalize",
+  "zram.prop",
+
+  "None",          		"No Multitasking (Mainly for Gamers)",0,
+  "64MB",			"Little Multitasking",0,
+  "128MB",			"Some Multitasking",1,
+  "256MB",          		"High Multitasking",0
+);
+###########################################################################################################
+#
+#                                               BOOT ANIMATION SELECTION
+#
+###########################################################################################################
+selectbox(
+  "Boot Animation",
+  "Which Boot Animation would you like?:",
+  "icons/personalize",
+  "bootanimation.prop",
+
+  "Kaos Droid",        		"Kaos Droid's Default Animation by MoonDogg98",1,
+  "CyanogenMod",		"CyanogenMod 10 Animation",0
+);
+
+###########################################################################################################
+#
+#                                               APPLICATION SELECTION
+#
+###########################################################################################################
+checkbox(
+  "Applications",
+  "What applications would you like to add?:",
+  "icons/personalize",
+  "applications.prop",
+
+  "Flash Support",			"Adobe Flash Player",0,
+  "TeamViewer",				"Add TeamViewer Support",1,
+  "PlayStation Mobile",			"Sony PlayStation Mobile",1
+);
+###########################################################################################################
+#
+#                                               WEB BROWSER / HOME LAUNCHER SELECTION
+#
+###########################################################################################################
+checkbox(
+  "Launchers & Browsers",
+  "Which Launcher / Browser(s) would you like to use?:",
+  "icons/personalize",
+  "multi.prop",
+
+  "AOSP",     				"Default AOSP Browser",0,
+  "",    				"This is just a gap doesnt matter if its selected or not",1,
+  "Apex Launcher",     			"",1,
+  "Trebuchet Launcher",			"CyanogenMod Launcher",0,
+  "Nova Launcher",			"",0
+);
+###########################################################################################################
+#
+#                                               EXTRA APPLICATIONS SELECTION
+#
+###########################################################################################################
+checkbox(
+  "Extra Applications",
+  "Which extra apps would you like to add?:",
+  "icons/personalize",
+  "extra.prop",
+
+  "ppp widget",     			"Useful for using 3g modem",0,
+  "XenoAmp",    				"Music Player",0,
+  "Swiftkey Tablet",     		"Alternative Keyboard",0,
+  "FileExpert",					"File Manager",0,
+  "Mx Player",					"Video Player",0
+);
+###########################################################################################################
+#
+#                                               ADDITIONAL LANGUAGES SELECTION
+#
+###########################################################################################################
+checkbox(
+  "Languages",
+  "Which Languages(s) would you like to use?:",
+  "icons/personalize",
+  "languages.prop",
+
+  "iWnn IME",    			"Japanese",0,
+  "Google PinYin IME",     		"Chinese",0,
+  "Korean IME",        			"Korean",0
+);
+###########################################################################################################
+#
+#                                               REMOVE APPLICATION SELECTION
+#
+###########################################################################################################
+checkbox(
+  "Remove Apps",
+  "What Apps would you like to Remove?:",
+  "icons/personalize",
+  "remove.prop",
+
+  "CyanogenMod File Manager",   "REMOVE Root File Manager",0,
+  "ROM Manager",    			"REMOVE ROM Manager, For booting into and flashing new versions of Clockworkmod Recovery and updating ROM",0,
+  "Titanium Backup",     		"REMOVE Titanium Backup, For all your backup / restore needs",0,
+  "Apollo Music Player",		"REMOVE Apollo Music Player",0,
+  "Ad-Blocking Host file",		"REMOVE ad-Blocking host file, blocks ads from apps",0,
+  "Email & Exchange",			"REMOVE default Android Email and Exchange app (not Gmail)",1
+);
+###########################################################################################################
+#
+#                                               GPS REGION SELECTION
+#
+###########################################################################################################
+selectbox(
+  "Custom GPS Config",
+  "Please choose your region:",
+  "icons/personalize",
+  "gps.prop",
+
+  "Asia",    				"Asia specific GPS configuration",0,
+  "Australia",     			"Australia specific GPS configuration",0,
+  "Europe",        			"Europe specific GPS configuration",1,
+  "North America",    			"North America specific GPS configuration",0,
+  "South America",    			"South America specific GPS configuration",0,
+  "Oceania",     			"Oceania specific GPS configuration",0,
+  "South Africa",     			"South Africa specific GPS configuration",0
+
+);
+###########################################################################################################
+#
+#                                               CONFIRM CONFIGURATION
+#
+###########################################################################################################
+viewbox(
+  "Ready To Install",
+  "All required information has been gathered for this installation.\n\n"+
+  "Click next to begin...",
+  "icons/info"
+);
+###########################################################################################################
+#
+#                                               INSTALL PROCESS
+#
+###########################################################################################################
+install(
+  "Installing",
+  "Now flashing <b>"+ini_get("rom_name")+"</b>...\n"+
+  "Please Wait...",
+  "icons/install",
+  "@install"
+);
+###########################################################################################################
+#
+#                                               FINISHED INSTALLATION
+#
+###########################################################################################################
+ini_set("text_next", "Finish");
+
+checkviewbox(
+    "Installation Completed",
+    "<#selectbg_g><b>Congratulation...</b></#>\n\n"+
+    "<b>"+ini_get("rom_name")+"</b> has been installed into your device.\n\n"+
+    "Installer Status: "+getvar("retstatus")+"\n\n",
+    "@welcome",
+    "Reboot your device now.",
+    "1",
+    "reboot_it"
+);
+###########################################################################################################
+#
+#                                               REBOOT OPTIONS
+#
+###########################################################################################################
+if
+  getvar("reboot_it")=="1"
+then
+  reboot("onfinish");
+endif;

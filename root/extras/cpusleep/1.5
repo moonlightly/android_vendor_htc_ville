@@ -1,0 +1,82 @@
+#!/system/bin/sh
+#
+# ==============================================================
+# beginning of the screenstate-scaling loop
+# ==============================================================
+set -x;
+exec > /data/Log_cpusleep.log 2>&1;
+(while [ 1 ];
+do
+# settings for while the screen is on / usage
+    AWAKE=`cat /sys/power/wait_for_fb_wake`;
+    if [ $AWAKE = "awake" ]; then
+# Turn on CPU's 1, 2 & 3
+	echo 1 > /sys/devices/system/cpu/cpu1/online;
+	echo 1 > /sys/devices/system/cpu/cpu2/online;
+	echo 1 > /sys/devices/system/cpu/cpu3/online;
+# Set CPU governor to Interactive
+	echo "interactive" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "interactive" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor;
+	echo "interactive" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor;
+	echo "interactive" > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor;
+# Set Minimum and Maximum CPU Frequency
+# CPU 0
+	echo "1500000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "51000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+# CPU 1
+	echo "1500000" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq;
+	echo "51000" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq;
+# CPU 2
+	echo "1500000" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq;
+	echo "51000" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq;
+# CPU 3
+	echo "1500000" > /sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq;
+	echo "51000" > /sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq;
+# How often kernel writes to disk
+	busybox sysctl -e -w vm.dirty_ratio=90;
+	busybox sysctl -e -w vm.dirty_background_ratio=80;
+        AWAKE=;
+    fi;
+# settings for while the screen is off
+    SLEEPING=`cat /sys/power/wait_for_fb_sleep`;
+    if [ $SLEEPING = "sleeping" ]; then
+# Set CPU governor to Powersave
+	echo "conservative" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor;
+	echo "conservative" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_governor;
+	echo "conservative" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor;
+	echo "conservative" > /sys/devices/system/cpu/cpu3/cpufreq/scaling_governor;
+#Set Minimum and Maximum CPU Frequency
+# CPU 0
+	echo "370000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq;
+	echo "51000" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq;
+# CPU 1
+	echo "370000" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_max_freq;
+	echo "51000" > /sys/devices/system/cpu/cpu1/cpufreq/scaling_min_freq;
+# CPU 2
+	echo "370000" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq;
+	echo "51000" > /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq;
+# CPU 3
+	echo "370000" > /sys/devices/system/cpu/cpu3/cpufreq/scaling_max_freq;
+	echo "51000" > /sys/devices/system/cpu/cpu3/cpufreq/scaling_min_freq;
+# Turn off CPU's 1, 2 & 3
+        echo 0 > /sys/devices/system/cpu/cpu1/online;
+        echo 0 > /sys/devices/system/cpu/cpu2/online;
+        echo 0 > /sys/devices/system/cpu/cpu3/online;
+# How often kernel writes to disk
+	busybox sysctl -e -w vm.dirty_ratio=180;
+	busybox sysctl -e -w vm.dirty_background_ratio=140;
+        SLEEPING=;
+    fi;    
+done &);
+
+
+
+
+
+
+
+
+
+
+
+
