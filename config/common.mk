@@ -15,8 +15,4 @@ PRODUCT_COPY_FILES += \
     vendor/KaosDroid/device/htc/ville/prebuilt/lib/modules/cifs.ko:system/lib/modules/cifs.ko \
     vendor/KaosDroid/device/htc/ville/prebuilt/lib/modules/md4.ko:system/lib/modules/md4.ko \
     vendor/KaosDroid/device/htc/ville/prebuilt/lib/modules/nls_utf8.ko:system/lib/modules/nls_utf8.ko
-    
-#Change Default.prop Entries
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.com.android.dateformat=dd-MM-yy \
-    ro.product.local.region=GB
+
