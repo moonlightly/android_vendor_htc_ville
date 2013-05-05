@@ -6,4 +6,8 @@ Required
 * An unlocked bootloader
 * A custom recovery
 
+The Changelog and Bug List and Thanks list can be found on:
+* XDA Thread
+* On the Device (Settings --> About KaosDroid)
+
 Thanks
