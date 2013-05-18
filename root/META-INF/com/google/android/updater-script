@@ -179,12 +179,12 @@ if
     file_getprop("/tmp/aroma-data/bootanimation.prop","selected.0") == "1"
 then
 	ui_print("-->Adding Kaos Droid's Default Boot Animation");
+			package_extract_dir("extras/bootanimation/kaosdroid", "/system/media");
 endif;
 if
     file_getprop("/tmp/aroma-data/bootanimation.prop","selected.0") == "2"
 then
 	ui_print("-->Adding CyanogenMod 10 Animation");
-			package_extract_dir("extras/bootanimation/cyanogenmod", "/system/media");
 endif;
 ###################################################################################################################
 #	
