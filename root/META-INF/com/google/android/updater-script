@@ -66,17 +66,37 @@ set_progress(0.14);
 ###################################################################################################################
 set_progress(0.16);
 ui_print("-->Checking filesystems for errors");
-	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p35");
-	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p34");
 	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p33");
+	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p34");
+	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p35");
 	run_program("/sbin/sleep", "2");
+###################################################################################################################
+#
+#				REMOVE JOURNALING FROM EXT4 FILESYSTEM
+#
+###################################################################################################################
+ui_print("-->Removing journaling on filesystem");
+run_program("/sbin/tune2fs", "-O", "^has_journal", "/dev/block/mmcblk0p33");
+run_program("/sbin/tune2fs", "-O", "^has_journal", "/dev/block/mmcblk0p34");
+run_program("/sbin/tune2fs", "-O", "^has_journal", "/dev/block/mmcblk0p35");
 set_progress(0.18);
+###################################################################################################################
+#
+#				CHECHING FOR FILESYSTEM ERRORS AGAIN
+#
+###################################################################################################################
+ui_print("-->Checking filesystems for errors again");
+	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p33");
+	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p34");
+	run_program("/sbin/e2fsck", "-p", "/dev/block/mmcblk0p35");
+	run_program("/sbin/sleep", "2");
+set_progress(0.20);
 ###################################################################################################################
 #
 #					INSTALL PROCESS
 #
 ###################################################################################################################
-set_progress(0.20);
+set_progress(0.25);
 show_progress(0.30, 4564);
 ui_print("@Installing ROM");
 	mount("ext4", "EMMC", "/dev/block/mmcblk0p34", "/cache");
